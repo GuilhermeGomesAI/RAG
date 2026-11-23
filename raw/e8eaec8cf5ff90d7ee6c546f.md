@@ -1,0 +1,581 @@
+---
+updatedAt: 2026-09-03T18:28:49.000Z
+agentTools:
+  siteIndex: https://docs.cielo.com.br/llms.txt
+  projectIndex: https://docs.cielo.com.br/pix-can-cbk/llms.txt
+---
+
+# Criar cobrança recorrente.
+
+Endpoint para criar uma cobrança recorrente.
+
+# OpenAPI definition
+
+```json
+{
+  "openapi": "3.0.1",
+  "info": {
+    "version": "1.0.4",
+    "title": "Cielo - Pix",
+    "description": "API para geração de PIX QR CODE<br/><br/><p><strong>Autenticação:</strong><br/><ul><li><p><b>Sandbox:&nbsp;</b><a href=\"https://api2.cielo.com.br/sandbox/v2\">https://api2.cielo.com.br/sandbox/v2</a></p></li><li><p><b>Produção:&nbsp;</b><a href=\"https://api2.cielo.com.br/v2\">https://api2.cielo.com.br/v2</a></p></li></ul><p><strong>Api:</strong><br/><ul><li><p><b>Sandbox:&nbsp;</b><a href=\"https://api2.cielo.com.br/sandbox/cielo-pix/v1\">https://api2.cielo.com.br/sandbox/cielo-pix/v1</a></p></li><li><p><b>Produção:&nbsp;</b><a href=\"https://api-mtls.cielo.com.br/cielo-pix/v1\">https://api-mtls.cielo.com.br/cielo-pix/v1</a></p></li></ul><br/><p><strong>Callback de Notificação:</strong><br/><br/>Na seção <b><i>Webhook</i></b> dentro do método <b><i>Put</b></i>, há uma aba denominada <b><i>Callbacks</i></b>.<p>Nesta aba é definido o callback que será enviado para o endereço cadastrado no webhook.</p>"
+  },
+  "servers": [
+    {
+      "url": "https://api2.cielo.com.br/sandbox/cielo-pix/v1",
+      "description": "Ambiente de Sandbox."
+    },
+    {
+      "url": "https://api-mtls.cielo.com.br/cielo-pix/v1",
+      "description": "Ambiente de Produção."
+    }
+  ],
+  "paths": {
+    "/cobr/{txid}": {
+      "parameters": [
+        {
+          "name": "txid",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "$ref": "#/components/schemas/TxId"
+          }
+        }
+      ],
+      "put": {
+        "tags": [
+          "CobR"
+        ],
+        "summary": "Criar cobrança recorrente.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "Endpoint para criar uma cobrança recorrente.",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/CobRBody"
+        },
+        "responses": {
+          "201": {
+            "description": "Cobrança imediata recorrente.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CobRGerada"
+                },
+                "examples": {
+                  "response1": {
+                    "$ref": "#/components/examples/cobRResponse2"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Requisição com formato inválido.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problema"
+                },
+                "examples": {
+                  "requisicao1": {
+                    "$ref": "#/components/examples/OperacaoInvalidaCobRExample1"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "$ref": "#/components/responses/AcessoNegado"
+          },
+          "404": {
+            "$ref": "#/components/responses/NaoEncontrado"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServicoIndisponivel"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "CobRGerada": {
+        "type": "object",
+        "title": "Cobrança Recorrente Gerada",
+        "required": [
+          "idRec",
+          "txid",
+          "status",
+          "valor",
+          "recebedor",
+          "calendario"
+        ],
+        "description": "Dados criados ou alterados da cobrança recorrente via API Pix",
+        "allOf": [
+          {
+            "type": "object",
+            "properties": {
+              "idRec": {
+                "$ref": "#/components/schemas/RecId"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "properties": {
+              "txid": {
+                "$ref": "#/components/schemas/TxId"
+              }
+            }
+          },
+          {
+            "$ref": "#/components/schemas/CobRBase"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "calendario": {
+                "type": "object",
+                "required": [
+                  "criacao"
+                ],
+                "properties": {
+                  "criacao": {
+                    "type": "string",
+                    "format": "date",
+                    "title": "Data de criação da cobrança",
+                    "description": "Trata-se de uma data, no formato `YYYY-MM-DD`, segundo ISO 8601. É a data de criação da cobrança.",
+                    "example": "2023-04-01"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "$ref": "#/components/schemas/CobRStatus"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "politicaRetentativa": {
+                "type": "string",
+                "title": "Política de retentativa da cobrança recorrente",
+                "enum": [
+                  "NAO_PERMITE",
+                  "PERMITE_3R_7D"
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "properties": {
+              "atualizacao": {
+                "type": "array",
+                "title": "Histórico de Status",
+                "description": "Histórico das mudanças de status das cobranças recorrentes.",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "data"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "title": "Status da cobrança",
+                      "description": "Status da cobrança.",
+                      "enum": [
+                        "CRIADA",
+                        "ATIVA",
+                        "CONCLUIDA",
+                        "EXPIRADA",
+                        "REJEITADA",
+                        "CANCELADA"
+                      ]
+                    },
+                    "data": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Data e hora do registro de status atualizado. Respeita RFC 3339."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "$ref": "#/components/schemas/DadosDevedorRecorrencia"
+          }
+        ]
+      },
+      "CobRBase": {
+        "type": "object",
+        "title": "Cobrança Recorrente Base",
+        "required": [
+          "ajusteDiaUtil"
+        ],
+        "description": "Atributos de cobrança recorrente",
+        "properties": {
+          "infoAdicional": {
+            "type": "string",
+            "title": "Informações adicionais da fatura.",
+            "description": "Informações adicionais da fatura.",
+            "maxLength": 140
+          },
+          "calendario": {
+            "type": "object",
+            "title": "Informações sobre calendário da cobrança",
+            "required": [
+              "dataDeVencimento"
+            ],
+            "description": "",
+            "properties": {
+              "dataDeVencimento": {
+                "type": "string",
+                "format": "date",
+                "title": "Data de vencimento da cobrança",
+                "description": "Trata-se de uma data, no formato `YYYY-MM-DD`, segundo ISO 8601. É a data de expiração da cobrança.",
+                "example": "2023-04-01"
+              }
+            }
+          },
+          "valor": {
+            "type": "object",
+            "title": "Valor da cobrança recorrente",
+            "required": [
+              "original"
+            ],
+            "description": "Valor da cobrança recorrente",
+            "properties": {
+              "original": {
+                "type": "string",
+                "title": "Valor",
+                "pattern": "\\d{1,10}\\.\\d{2}",
+                "description": "Valor original da cobrança."
+              }
+            }
+          },
+          "ajusteDiaUtil": {
+            "type": "boolean",
+            "title": "Ajuste data vencimento para próximo dia útil",
+            "default": true,
+            "description": "Campo de ativação do ajuste da data de vencimento para próximo dia útil caso o vencimento corrente seja um dia não útil. O PSP Pagador deverá considerar os feriados locais com base no código município do usuário pagador."
+          },
+          "recebedor": {
+            "description": "O objeto recebedor organiza as informações sobre o recebedor da cobrança.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DadosBancariosRecebedor"
+              }
+            ]
+          }
+        }
+      },
+      "CobRSolicitada": {
+        "type": "object",
+        "title": "Cobrança Recorrente Solicitada",
+        "required": [
+          "idRec",
+          "calendario",
+          "valor",
+          "recebedor"
+        ],
+        "description": "Dados enviados para criação da cobrança recorrente via API Pix",
+        "allOf": [
+          {
+            "type": "object",
+            "properties": {
+              "idRec": {
+                "$ref": "#/components/schemas/RecId"
+              }
+            }
+          },
+          {
+            "$ref": "#/components/schemas/CobRBase"
+          },
+          {
+            "$ref": "#/components/schemas/DadosDevedorRecorrencia"
+          }
+        ]
+      },
+      "DadosDevedorRecorrencia": {
+        "type": "object",
+        "properties": {
+          "devedor": {
+            "description": "O objeto devedor organiza as informações sobre o devedor da recorrência.",
+            "allOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "title": "Email",
+                    "description": "Email do usuário."
+                  }
+                }
+              },
+              {
+                "$ref": "#/components/schemas/DadosComplementaresPessoa"
+              }
+            ]
+          }
+        }
+      },
+      "DadosComplementaresPessoa": {
+        "type": "object",
+        "properties": {
+          "logradouro": {
+            "type": "string",
+            "title": "Logradouro",
+            "description": "Logradouro do usuário.",
+            "maxLength": 200
+          },
+          "cidade": {
+            "type": "string",
+            "title": "Cidade",
+            "description": "Cidade do usuário.",
+            "maxLength": 200
+          },
+          "uf": {
+            "type": "string",
+            "title": "UF",
+            "description": "UF do usuário.",
+            "maxLength": 2
+          },
+          "cep": {
+            "type": "string",
+            "title": "CEP",
+            "description": "CEP do usuário.",
+            "maxLength": 8
+          }
+        }
+      },
+      "CobRStatus": {
+        "type": "object",
+        "title": "Status da Cobrança Recorrente",
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status do registro da cobrança",
+            "enum": [
+              "CRIADA",
+              "ATIVA",
+              "CONCLUIDA",
+              "EXPIRADA",
+              "REJEITADA",
+              "CANCELADA"
+            ]
+          }
+        }
+      },
+      "RecId": {
+        "type": "string",
+        "title": "ID Recorrência",
+        "description": "# Identificador da Recorrência\n\nRegra de formação:\n- RAxxxxxxxxyyyyMMddkkkkkkkkkkk (29 caracteres; \"case sensitive\", isso é, diferencia letras maiúsculas e minúsculas), sendo:\n  - \"R\":  fixo (1 caractere). \"R\" para a recorrência criada dentro do Pix;\n  - \"A\": identificação da possibilidade de novas tentativas, sendo possíveis os valores \"R\" ou \"N\" (1 caractere). \"R\" caso a recorrência permita novas tentativas de pagamento pós vencimento, ou \"N\" caso não permita novas tentativas.\n  - \"xxxxxxxx\":  identificação do agente que presta serviço para o usuário recebedor que gerou o <Id>, podendo ser: o ISPB do participante direto, o ISPB do participante indireto ou os 8 primeiros dígitos do CNPJ do prestador de serviço de iniciação (8 caracteres numéricos [0-9]);\n  - \"yyyyMMdd\":  data (8 caracteres) de criação da recorrência;\n  - \"kkkkkkkkkkk\": sequencial criado pelo agente que gerou o <Id> (11 caracteres alfanuméricos [a-z|A-Z|0-9]). Deve ser único dentro de cada \"yyyyMMdd\".\n\nDessa forma, o ID da recorrência deve ser formado de acordo com um dos tipos a seguir:\n- \"RRxxxxxxxxyyyyMMddkkkkkkkkkkk\"; para recorrência criada dentro do Pix e que permite novas tentativas de pagamento pós vencimento; ou\n- \"RNxxxxxxxxyyyyMMddkkkkkkkkkkk\"; para recorrência criada dentro do Pix e que não permite novas tentativas de pagamento pós vencimento.\n",
+        "pattern": "[a-zA-Z0-9]{29}",
+        "minLength": 29,
+        "maxLength": 29,
+        "example": "RR1234567820240115abcdefghijk"
+      },
+      "DadosBancariosRecebedor": {
+        "type": "object",
+        "required": [
+          "conta",
+          "tipoConta"
+        ],
+        "properties": {
+          "conta": {
+            "type": "string",
+            "description": "Número da conta do usuário recebedor.",
+            "maxLength": 20
+          },
+          "tipoConta": {
+            "type": "string",
+            "title": "Tipo da conta do usuário recebedor",
+            "description": "Tipo da conta do usuário recebedor.",
+            "enum": [
+              "CORRENTE",
+              "POUPANCA",
+              "PAGAMENTO"
+            ]
+          },
+          "agencia": {
+            "type": "string",
+            "description": "Número da agência do usuário recebedor.",
+            "maxLength": 4
+          }
+        }
+      },
+      "Problema": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "format": "uri",
+            "description": "URI de referência que identifica o tipo de problema. De acordo com a RFC 7807.",
+            "example": "https://pix.bcb.gov.br/api/v2/error/NaoEncontrado"
+          },
+          "title": {
+            "type": "string",
+            "description": "Descrição resumida do problema."
+          },
+          "status": {
+            "type": "integer",
+            "description": "Código HTTP do status retornado."
+          },
+          "detail": {
+            "type": "string",
+            "description": "Descrição completa do problema."
+          }
+        }
+      },
+      "TxId": {
+        "type": "string",
+        "title": "Id da Transação",
+        "description": "# Identificador da transação\n\nO campo `txid` determina o identificador da transação.\nO objetivo desse campo é ser um elemento que possibilite ao PSP do recebedor apresentar ao usuário recebedor a funcionalidade de conciliação de pagamentos.\n\nNa pacs.008, é referenciado como `TransactionIdentification <txId>` ou `idConciliacaoRecebedor`.\n\nEm termos de fluxo de funcionamento, o txid é lido pelo aplicativo do PSP do pagador e, \ndepois de confirmado o pagamento, é enviado para o SPI via pacs.008. \nUma pacs.008 também é enviada ao PSP do recebedor, contendo, além de todas as informações usuais \ndo pagamento, o txid.\nAo perceber um recebimento dotado de txid, o PSP do recebedor está apto a se comunicar com o usuário recebedor, \ninformando que um pagamento específico foi liquidado.\n\nO txid é criado exclusivamente pelo usuário recebedor e está sob sua responsabilidade.\nO txid, no contexto de representação de uma cobrança, é único por CPF/CNPJ do usuário recebedor. Cabe ao \nPSP recebedor validar essa regra na API Pix.\n",
+        "pattern": "[a-zA-Z0-9]{26,35}",
+        "example": "1232c88b8f1e6ec4ddd9361e7faed7b24b2"
+      }
+    },
+    "responses": {
+      "AcessoNegado": {
+        "description": "Requisição de participante autenticado que viola alguma regra de autorização.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Problema"
+            }
+          }
+        }
+      },
+      "ServicoIndisponivel": {
+        "description": "Serviço não está disponível no momento. Serviço solicitado pode estar em manutenção ou fora da janela de funcionamento.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Problema"
+            }
+          }
+        }
+      },
+      "NaoEncontrado": {
+        "description": "Recurso solicitado não foi encontrado.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Problema"
+            }
+          }
+        }
+      }
+    },
+    "requestBodies": {
+      "CobRBody": {
+        "description": "Dados para geração da cobrança recorrente.",
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/CobRSolicitada"
+            },
+            "examples": {
+              "exemplo1": {
+                "$ref": "#/components/examples/cobRBody1"
+              }
+            }
+          }
+        }
+      }
+    },
+    "examples": {
+      "OperacaoInvalidaCobRExample1": {
+        "summary": "Exemplo de erro da requisição 1",
+        "value": {
+          "type": "https://pix.bcb.gov.br/api/v2/error/CobROperacaoInvalida",
+          "title": "Operação inválida.",
+          "status": 400,
+          "detail": "A cobrança não respeita o schema.",
+          "violacoes": [
+            {
+              "razao": "O objeto cobr.calendario não respeita o schema.",
+              "propriedade": "cobr.calendario"
+            }
+          ]
+        }
+      },
+      "cobRResponse2": {
+        "summary": "Exemplo de cobrança recorrente 1",
+        "value": {
+          "idRec": "RR1234567820240115abcdefghijk",
+          "txid": "3136957d93134f2184b369e8f1c0729d",
+          "infoAdicional": "Serviços de Streamming de Música e Filmes.",
+          "calendario": {
+            "criacao": "2024-04-01",
+            "dataDeVencimento": "2024-04-15"
+          },
+          "valor": {
+            "original": "106.07"
+          },
+          "status": "CRIADA",
+          "politicaRetentativa": "PERMITE_3R_7D",
+          "ajusteDiaUtil": true,
+          "devedor": {
+            "cep": "89256-140",
+            "cidade": "Uberlândia",
+            "email": "sebastiao.tavares@mail.com",
+            "logradouro": "Alameda Franco 1056",
+            "uf": "MG"
+          },
+          "recebedor": {
+            "agencia": "9708",
+            "conta": "012682",
+            "tipoConta": "CORRENTE"
+          },
+          "atualizacao": [
+            {
+              "data": "2024-04-01T14:47:29.470Z",
+              "status": "CRIADA"
+            }
+          ]
+        }
+      },
+      "cobRBody1": {
+        "summary": "Exemplo de criação de cobrança recorrente 1",
+        "value": {
+          "idRec": "RR1234567820240115abcdefghijk",
+          "infoAdicional": "Serviços de Streamming de Música e Filmes.",
+          "calendario": {
+            "dataDeVencimento": "2024-04-15"
+          },
+          "valor": {
+            "original": "106.07"
+          },
+          "ajusteDiaUtil": true,
+          "devedor": {
+            "cep": "89256-140",
+            "cidade": "Uberlândia",
+            "email": "sebastiao.tavares@mail.com",
+            "logradouro": "Alameda Franco 1056",
+            "uf": "MG"
+          },
+          "recebedor": {
+            "agencia": "9708",
+            "conta": "012682",
+            "tipoConta": "CORRENTE"
+          }
+        }
+      }
+    }
+  }
+}
+```

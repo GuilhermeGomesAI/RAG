@@ -1,0 +1,27 @@
+{
+  "ecosystem": "cielo",
+  "built_at": "2026-11-23T00:29:40+00:00",
+  "model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+  "n_chunks": 877,
+  "seed_only": false,
+  "seed_sections": 9,
+  "crawled_md": 100,
+  "crawled_pdf": 0,
+  "pdf_failed": 0,
+  "classifier": {
+    "n_examples": 66,
+    "labels": {
+      "pix": 8,
+      "cancelamento": 8,
+      "chargeback": 7,
+      "cielo_smart": 8,
+      "conecta": 9,
+      "conciliacao": 9,
+      "seguranca": 8,
+      "operacao_api": 9
+    },
+    "cv_accuracy": 0.8181818181818182,
+    "cv_folds": 3,
+    "classes_com_1_exemplo": []
+  }
+}
