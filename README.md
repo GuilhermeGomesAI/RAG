@@ -1,78 +1,164 @@
-# Cielo Intelligence
+# 🧠 RAG Intelligence
 
-Busca semântica com redes neurais sobre a **documentação pública oficial** da Cielo. Recupera trechos com URL de origem, classifica o tema da pergunta e **se abstém quando a documentação não traz evidência**.
+**Busca inteligente sobre documentação técnica de instituições de pagamento, utilizando embeddings, redes neurais e recuperação contextual de informações.**
 
-> Projeto experimental, não oficial. Não executa pagamentos, não autentica em áreas privadas e não substitui documentação, suporte ou homologação.
+O RAG Intelligence é um projeto experimental desenvolvido em Python para pesquisar, recuperar e organizar informações presentes na documentação pública oficial da Cielo.
 
-## O que é (e o que não é)
+O sistema combina busca semântica, busca lexical (BM25), classificação temática com uma rede neural MLP e recuperação de contexto entre trechos do mesmo documento.
 
-| Camada | Implementação | Natureza |
+Além de apresentar evidências relevantes, disponibiliza os endereços das fontes oficiais para conferência das informações.
+
+> **Aviso:** Projeto independente e experimental, sem vínculo oficial com a Cielo. Não executa pagamentos, não autentica em ambientes privados e não substitui a documentação oficial, o suporte técnico ou os processos de homologação.
+
+---
+
+## 🎯 Objetivo do projeto
+
+Desenvolver uma solução de inteligência artificial capaz de facilitar a consulta à documentação técnica de instituições de pagamento, reduzindo o tempo necessário para localizar informações sobre APIs, produtos, integrações e processos operacionais.
+
+O projeto foi desenvolvido com foco em:
+
+- Recuperação inteligente de informações técnicas.
+- Busca semântica em português.
+- Identificação automática do tema da pergunta.
+- Combinação de relevância semântica e correspondência lexical.
+- Recuperação de trechos complementares do mesmo documento.
+- Apresentação das fontes oficiais.
+- Abstenção quando não há evidências suficientes.
+
+## 🏗️ Arquitetura e tecnologias
+
+| Camada | Tecnologia | Responsabilidade |
 |---|---|---|
-| Base documental | `crawler.py` (llms.txt + `.md` + PDFs, host oficial, respeita robots.txt) | coleta |
-| Camada neural | `paraphrase-multilingual-MiniLM-L12-v2` (embeddings) | rede pré-treinada, **não treinada aqui** |
-| Busca híbrida | BM25 (palavras exatas) somado aos embeddings (`hybrid_weight`) | dá peso a nomes de produto |
-| Classificação | MLP (48→24) sobre os embeddings, treinada em `training_examples.jsonl` | rede treinada aqui, com exemplos sintéticos revisáveis |
-| Resposta | trechos + URL + aviso de "sem evidência" | recuperação (RAG sem gerador) |
+| Coleta documental | Python / Crawler | Coleta de documentação pública |
+| Base documental | Markdown, JSONL e PDF | Armazenamento dos conteúdos |
+| Processamento | Python | Limpeza e divisão dos documentos |
+| Embeddings | Sentence Transformers | Representação vetorial dos textos |
+| Modelo semântico | MiniLM multilíngue | Similaridade entre perguntas e documentos |
+| Busca lexical | BM25 | Correspondência de palavras e termos técnicos |
+| Busca híbrida | BM25 + embeddings | Combinação de relevância lexical e semântica |
+| Classificação | MLP 48→24 | Identificação do tema da pergunta |
+| Contextualização | Chunk Lookup | Recuperação de trechos vizinhos |
+| Interface | Streamlit | Pesquisa e visualização das evidências |
 
-Não é um LLM treinado do zero. Nada aqui afirma que "o modelo aprendeu toda a documentação": `data/<eco>/index_meta.json` registra exatamente quantas páginas/PDFs/trechos foram processados e se o índice veio só da base-semente (`seed_only`).
+### Modelo de embeddings
 
-## Uso local
+Utiliza o modelo:
 
-Python 3.10+.
+`sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2`
 
-```bash
-python -m venv .venv
-source .venv/bin/activate          # Windows: .venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-pip install -e .                  # registra o pacote csi (src/) e o comando `csi`
+Esse modelo transforma perguntas e documentos em representações vetoriais, permitindo localizar conteúdos semanticamente relacionados, mesmo quando não utilizam exatamente as mesmas palavras.
 
-python -m csi crawl cielo --max-pages 100   # teste pequeno; sem flag = tudo
-python -m csi index cielo                   # embeddings + MLP + index_meta.json
-python -m csi eval cielo -v                 # recall@k, MRR, tema, produto, abstenção (-v = pergunta por pergunta)
-python -m csi calibrate cielo               # sugere o min_score a partir das perguntas de avaliação
-python -m csi retrain cielo                 # retreina só a MLP de tema (rápido), sem refazer o índice
-python -m csi ask cielo "Quais os requisitos do Tap on Phone para iOS?"
-streamlit run app.py
-```
+O modelo de embeddings é pré-treinado e não é treinado do zero neste projeto.
 
-Sem rodar o `crawl`, o `index` usa só a base-semente (`ecosystems/<eco>/seed_knowledge.md`) e o app avisa isso. Se o `llms.txt` estiver fora do ar, o crawler cai para as páginas de `seed_sources.json` + `.md`.
+### Classificador neural MLP
 
-## Testes
+O projeto utiliza uma rede neural MLP com arquitetura 48→24 para classificar o tema provável da pergunta.
 
-```bash
-python -m unittest discover -s tests -v
-```
+O treinamento é realizado com exemplos definidos em `training_examples.jsonl`.
 
-Rodam offline com um encoder determinístico (sem baixar modelo, sem acessar os portais). Eles validam a lógica; **não medem a qualidade do modelo real**. Para isso use `python -m csi eval <eco>` depois de indexar.
+A classificação auxilia na identificação de assuntos como:
 
-## Calibração antes de confiar nos resultados
+- Pix
+- Conecta
+- Cancelamento
+- Chargeback
+- Conciliação
+- Segurança
+- Operação de APIs
+- Cielo Smart
 
-1. **`min_score`** (`ecosystems/*/config.json`, padrão 0,40) é a pontuação híbrida mínima do 1º resultado para responder. Rode `python -m csi calibrate <eco>`: a tabela mostra, para cada limite, quantas respostas erradas seriam entregues e quantas certas seriam perdidas. Prefira o menor limite com **zero respostas erradas entregues**. Com poucas perguntas é só ponto de partida.
-2. **`wrong_answers_delivered`** (no `eval`) é a métrica de segurança principal: respostas com evidência, mas da página errada, e perguntas fora do escopo respondidas.
-3. **`training_examples.jsonl`** tem exemplos sintéticos e revisáveis (cerca de 5 a 9 por tema). Nenhuma pergunta de `eval_questions.jsonl` pode aparecer no treino; um teste verifica isso. Amplie os exemplos antes de interpretar `category_accuracy`.
-4. **Produto pela fonte:** `product_families` mapeia o 1º trecho do caminho da URL a um produto. Só vale para portais cuja URL é organizada por produto, como o da Cielo.
-5. `eval_questions.jsonl` cobre só páginas da base-semente. Depois do crawl completo, acrescente perguntas validadas por especialista.
+A confiança apresentada pela MLP representa a classificação temática, não a probabilidade de uma informação estar tecnicamente correta.
 
-## Estrutura
+---
 
-```
-ecosystems/<eco>/   config.json, seed_*, training_examples.jsonl, eval_questions.jsonl
-src/csi/            config, crawler, indexer, classifier, search, evaluate, cli
-app.py              interface Streamlit com seletor de ecossistema
-tests/              testes offline
-data/               artefatos gerados (ignorado pelo git)
-docs/               escopo e metodologia de cada ecossistema
-```
+## 🔎 Mecanismo de busca
 
+O mecanismo de recuperação combina duas estratégias:
 
-## Outros ecossistemas
+**1. Busca semântica**
 
-O projeto suporta mais de um portal: para adicionar (por exemplo, a Stone), crie uma pasta em `ecosystems/` com `config.json`, `seed_sources.json`, `seed_knowledge.md`, `training_examples.jsonl` e `eval_questions.jsonl`.
+Utiliza embeddings para identificar conteúdos relacionados ao significado da pergunta.
 
-## Segurança
+**2. Busca lexical**
 
-Só conteúdo público do host configurado. Nunca coloque PAN, CVV, trilhas, tokens, certificados ou dados de clientes em `data/`, nos exemplos ou nas perguntas.
+Utiliza BM25 para identificar correspondências de palavras, expressões e termos técnicos.
 
-## Próximos passos
+**3. Busca híbrida**
 
-Manifesto com versão/data (hash e data de coleta já são gravados), inspeção visual de PDFs com tabelas, perguntas avaliadas por especialista e, só depois, um LLM gerador com citação obrigatória e recusa sem suporte.
+Combina os resultados semânticos e lexicais por meio do parâmetro `hybrid_weight`.
+
+Essa combinação busca equilibrar a compreensão contextual com a precisão na localização de nomes de produtos, métodos, parâmetros e funcionalidades.
+
+### Recuperação contextual
+
+Uma das evoluções implementadas foi a recuperação de contexto complementar.
+
+Cada trecho indexado possui metadados que permitem identificar sua origem e posição no documento:
+
+- `document_id`: identifica o documento de origem.
+- `chunk_index`: identifica a posição do trecho dentro do documento.
+
+Com essas informações, o mecanismo consegue localizar os trechos imediatamente anterior e posterior ao resultado principal.
+
+O objetivo é preservar a continuidade das informações técnicas e reduzir a perda de contexto causada pela divisão dos documentos.
+
+**Exemplo de funcionamento:**
+
+1. A pergunta é processada.
+2. O mecanismo recupera os trechos mais relevantes.
+3. Para cada resultado, identifica seu documento de origem.
+4. Localiza os chunks vizinhos do mesmo documento.
+5. Apresenta o trecho principal e o contexto complementar na interface.
+
+A recuperação contextual não altera a pontuação original da busca e não mistura intencionalmente trechos de documentos diferentes.
+
+---
+
+## 🖥️ Interface da aplicação
+
+A interface foi desenvolvida com Streamlit.
+
+Principais recursos:
+
+- Seleção do ecossistema documental.
+- Campo de pesquisa em linguagem natural.
+- Controle da quantidade de evidências recuperadas.
+- Identificação do tema provável pela MLP.
+- Exibição das pontuações semântica e lexical.
+- Visualização do trecho principal.
+- Visualização do contexto complementar.
+- Acesso direto à documentação oficial.
+- Aviso quando não existem evidências suficientes.
+
+A aplicação apresenta evidências recuperadas, não respostas geradas por um modelo de linguagem.
+
+---
+
+## 📊 Estado atual do projeto
+
+Última indexação validada do ecossistema Cielo:
+
+| Indicador | Resultado |
+|---|---:|
+| Trechos indexados | 877 |
+| Páginas Markdown coletadas | 100 |
+| PDFs coletados | 0 |
+| Exemplos de treinamento da MLP | 66 |
+| Temas classificados | 8 |
+| Acurácia de validação cruzada da MLP | 81,82% |
+| Testes automatizados | 19 aprovados |
+
+A acurácia da MLP refere-se exclusivamente à classificação temática nos exemplos avaliados. Não representa a precisão factual da busca.
+
+Os números acima representam uma execução específica da indexação e podem mudar conforme novas coletas e atualizações da documentação.
+
+---
+
+## 🚀 Instalação e execução
+
+### Pré-requisitos
+
+- Python 3.10 ou superior.
+- Git.
+- Conexão com a internet para instalar depend
