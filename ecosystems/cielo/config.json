@@ -1,0 +1,15 @@
+{
+  "label": "Cielo",
+  "host": "docs.cielo.com.br",
+  "index_url": "https://docs.cielo.com.br/llms.txt",
+  "scope": "Portal docs.cielo.com.br (Cielo Smart, Pix, Cancelamento, Chargeback, Conecta, Extrato).",
+  "min_score": 0.25,
+  "hybrid_weight": 0.3,
+  "user_agent": "CieloIntelligenceResearchBot/0.2 (public documentation indexing)",
+  "product_families": {
+    "pix-can-cbk": "Pix, Cancelamento e Chargeback",
+    "conecta": "Cielo Conecta e Tap on Phone",
+    "extrato-webview": "Extrato e Carta de Circularização",
+    "cielo-smart": "Cielo Smart"
+  }
+}

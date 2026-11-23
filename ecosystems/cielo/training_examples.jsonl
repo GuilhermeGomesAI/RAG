@@ -1,0 +1,66 @@
+{"text": "gerar cobrança imediata pix qr code txid devolução pix", "label": "pix"}
+{"text": "consultar pix recebido webhook recorrência conciliação", "label": "pix"}
+{"text": "cancelar venda consultar status cancelamento carta de cancelamento", "label": "cancelamento"}
+{"text": "cancelamento em lote POS LIO TEF ecommerce", "label": "cancelamento"}
+{"text": "contestação chargeback aceitar recusar defesa documento webhook", "label": "chargeback"}
+{"text": "Cielo Smart terminal android aplicativo loja integração PDV", "label": "cielo_smart"}
+{"text": "Order Manager criar pedido consultar pedido status terminal", "label": "cielo_smart"}
+{"text": "Cielo Conecta parceiro subadquirente Pin Pad tokenização transação", "label": "conecta"}
+{"text": "Tap on Phone iOS SDK NFC iPhone requisitos Apple", "label": "conecta"}
+{"text": "extrato eletrônico arquivo previsão liquidação conciliação financeira", "label": "conciliacao"}
+{"text": "carta de circularização recebíveis futuros saldo em aberto relatório", "label": "conciliacao"}
+{"text": "segurança autenticação OAuth2 certificado mTLS credenciais", "label": "seguranca"}
+{"text": "certificado cliente TLS token access token autenticação API", "label": "seguranca"}
+{"text": "erro HTTP código de retorno timeout retentativa API", "label": "operacao_api"}
+{"text": "webhook callback notificação status transação", "label": "operacao_api"}
+{"text": "integração API endpoint payload headers sandbox produção", "label": "operacao_api"}
+{"text": "vendas pagamentos recebíveis liquidação conciliação financeira", "label": "conciliacao"}
+{"text": "cartão presente chip tarja cartão não presente digitado", "label": "conecta"}
+{"text": "Como criar uma cobrança imediata com QR Code Pix?", "label": "pix"}
+{"text": "O que é o txid de uma cobrança Pix?", "label": "pix"}
+{"text": "Como solicitar a devolução de um Pix recebido?", "label": "pix"}
+{"text": "Como consultar um Pix que acabei de receber?", "label": "pix"}
+{"text": "Quais endpoints existem para gerenciar cobranças Pix?", "label": "pix"}
+{"text": "A Cielo é participante direta do Pix?", "label": "pix"}
+{"text": "Como cancelar uma venda feita na maquininha?", "label": "cancelamento"}
+{"text": "Como cancelar uma transação de e-commerce pela API?", "label": "cancelamento"}
+{"text": "Como consultar o status de um cancelamento?", "label": "cancelamento"}
+{"text": "Cancelar venda de POS, LIO ou TEF por uma única API", "label": "cancelamento"}
+{"text": "Posso cancelar em lote várias vendas?", "label": "cancelamento"}
+{"text": "Quais produtos aceitam cancelamento pela API única?", "label": "cancelamento"}
+{"text": "Como aceitar ou recusar uma contestação de venda?", "label": "chargeback"}
+{"text": "Como listar contestações pendentes e já tratadas?", "label": "chargeback"}
+{"text": "Como enviar documentos de defesa de um chargeback?", "label": "chargeback"}
+{"text": "Como receber notificação de nova contestação por webhook?", "label": "chargeback"}
+{"text": "Qual o ciclo de vida de uma contestação?", "label": "chargeback"}
+{"text": "Como baixar os documentos de uma contestação?", "label": "chargeback"}
+{"text": "Quero criar um aplicativo para rodar na Cielo Smart", "label": "cielo_smart"}
+{"text": "Como publicar um app público ou privado na plataforma Smart?", "label": "cielo_smart"}
+{"text": "Como integrar meu sistema de PDV com a Cielo Smart?", "label": "cielo_smart"}
+{"text": "Como criar e consultar pedidos pelo Order Manager?", "label": "cielo_smart"}
+{"text": "A plataforma Smart executa aplicativos Android para varejo?", "label": "cielo_smart"}
+{"text": "Como integrar frente de caixa e gestão de negócios na Smart?", "label": "cielo_smart"}
+{"text": "Quais modelos de iPhone suportam o Tap on Phone?", "label": "conecta"}
+{"text": "Como um subadquirente se integra à Cielo?", "label": "conecta"}
+{"text": "Como funciona a tokenização de cartões na integração?", "label": "conecta"}
+{"text": "Como gerenciar Pin Pad, lojas e terminais por API?", "label": "conecta"}
+{"text": "Transações com cartão presente e não presente para parceiros", "label": "conecta"}
+{"text": "Qual a versão mínima do iOS para aceitar pagamento por aproximação?", "label": "conecta"}
+{"text": "Como obter dados estruturados de vendas e pagamentos para conciliar?", "label": "conciliacao"}
+{"text": "Como consultar recebíveis futuros e saldo em aberto?", "label": "conciliacao"}
+{"text": "Qual a diferença entre carta sintética e carta analítica?", "label": "conciliacao"}
+{"text": "Como automatizar a conciliação financeira sem trabalho manual?", "label": "conciliacao"}
+{"text": "Como acompanhar negociações de recebíveis e valores em aberto?", "label": "conciliacao"}
+{"text": "Relatório mensal de recebíveis futuros", "label": "conciliacao"}
+{"text": "Preciso de certificado para chamar a API?", "label": "seguranca"}
+{"text": "Como obter e renovar o access token de autenticação?", "label": "seguranca"}
+{"text": "Como proteger credenciais e certificados do meu sistema?", "label": "seguranca"}
+{"text": "Posso armazenar número do cartão e CVV no meu banco?", "label": "seguranca"}
+{"text": "Como funciona a autenticação mútua TLS nas chamadas?", "label": "seguranca"}
+{"text": "Onde guardar segredos e chaves de acesso com segurança?", "label": "seguranca"}
+{"text": "Quais códigos de erro HTTP a API pode retornar?", "label": "operacao_api"}
+{"text": "Como tratar timeout e fazer nova tentativa de uma chamada?", "label": "operacao_api"}
+{"text": "Como receber notificações automáticas por webhook?", "label": "operacao_api"}
+{"text": "Qual a diferença entre sandbox e produção?", "label": "operacao_api"}
+{"text": "Como montar headers e payload corretamente na requisição?", "label": "operacao_api"}
+{"text": "Existe limite de chamadas por segundo?", "label": "operacao_api"}

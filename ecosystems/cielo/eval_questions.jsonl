@@ -1,0 +1,10 @@
+{"question": "O que é a Cielo Smart?", "expected": ["https://docs.cielo.com.br/cielo-smart/docs/conheca-a-cielo-smart"], "category": "cielo_smart", "family": "Cielo Smart"}
+{"question": "Como funciona a API Pix da Cielo?", "expected": ["https://docs.cielo.com.br/pix-can-cbk/docs/conheca-api-pix"], "category": "pix", "family": "Pix, Cancelamento e Chargeback"}
+{"question": "O que é a API Única de Cancelamento?", "expected": ["https://docs.cielo.com.br/pix-can-cbk/docs/conheca-a-api-unica-de-cancelamento"], "category": "cancelamento", "family": "Pix, Cancelamento e Chargeback"}
+{"question": "Quais os requisitos do Tap on Phone para iOS?", "expected": ["https://docs.cielo.com.br/conecta/docs/requisitos-ios"], "category": "conecta", "family": "Cielo Conecta e Tap on Phone"}
+{"question": "O que é o Cielo Conecta?", "expected": ["https://docs.cielo.com.br/conecta/docs/conheca-o-cielo-conecta"], "category": "conecta", "family": "Cielo Conecta e Tap on Phone"}
+{"question": "Como tratar chargeback pela API?", "expected": ["https://docs.cielo.com.br/pix-can-cbk/docs/conheca-chargeback"], "category": "chargeback", "family": "Pix, Cancelamento e Chargeback"}
+{"question": "O que é o Extrato Eletrônico?", "expected": ["https://docs.cielo.com.br/extrato-webview/docs/conheca-o-extrato-eletronico"], "category": "conciliacao", "family": "Extrato e Carta de Circularização"}
+{"question": "Para que serve a carta de circularização?", "expected": ["https://docs.cielo.com.br/extrato-webview/docs/conheca-a-carta-de-circularizacao"], "category": "conciliacao", "family": "Extrato e Carta de Circularização"}
+{"question": "Qual a previsão do tempo para amanhã no Rio de Janeiro?", "expected": []}
+{"question": "Como fazer um bolo de cenoura?", "expected": []}

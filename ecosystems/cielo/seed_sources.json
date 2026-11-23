@@ -1,0 +1,34 @@
+[
+  {
+    "product": "Cielo Smart",
+    "url": "https://docs.cielo.com.br/cielo-smart/docs/conheca-a-cielo-smart"
+  },
+  {
+    "product": "API Pix",
+    "url": "https://docs.cielo.com.br/pix-can-cbk/docs/conheca-api-pix"
+  },
+  {
+    "product": "API Única de Cancelamento",
+    "url": "https://docs.cielo.com.br/pix-can-cbk/docs/conheca-a-api-unica-de-cancelamento"
+  },
+  {
+    "product": "Tap on Phone iOS",
+    "url": "https://docs.cielo.com.br/conecta/docs/requisitos-ios"
+  },
+  {
+    "product": "Cielo Conecta",
+    "url": "https://docs.cielo.com.br/conecta/docs/conheca-o-cielo-conecta"
+  },
+  {
+    "product": "API de Chargeback",
+    "url": "https://docs.cielo.com.br/pix-can-cbk/docs/conheca-chargeback"
+  },
+  {
+    "product": "Extrato Eletrônico",
+    "url": "https://docs.cielo.com.br/extrato-webview/docs/conheca-o-extrato-eletronico"
+  },
+  {
+    "product": "Carta de Circularização",
+    "url": "https://docs.cielo.com.br/extrato-webview/docs/conheca-a-carta-de-circularizacao"
+  }
+]
